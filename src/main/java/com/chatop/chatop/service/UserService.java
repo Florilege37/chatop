@@ -27,7 +27,6 @@ public class UserService {
 
     //Ajoute un UserDB dans la base
     public void createUser(UserModel userModel){
-        if (userModel.getPassword()!=null){
             UserDB userDB = new UserDB();
             userDB.setName(userModel.getName());
             userDB.setPassword(userModel.getPassword());
@@ -36,7 +35,6 @@ public class UserService {
             //On encode le password
             userDB.setPassword(passwordEncoder.encode(userDB.getPassword()));
             userRepository.save(userDB);
-        }
     }
 
     public UserDB findById(Long id){

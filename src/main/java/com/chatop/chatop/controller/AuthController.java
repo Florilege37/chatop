@@ -1,5 +1,6 @@
 package com.chatop.chatop.controller;
 
+import com.chatop.chatop.configuration.SpringSecurityConfig;
 import com.chatop.chatop.entity.UserDB;
 import com.chatop.chatop.model.UserModel;
 import com.chatop.chatop.model.response.Message;
@@ -10,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -41,7 +39,13 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Token> registerUser(@RequestBody UserModel userModel) {
-        userService.createUser(userModel);
-        return ResponseEntity.ok(new Token(jwtService.generateToken(userModel)));
+        if (userService.findByEmail(userModel.getEmail()) != null || userModel.getName() == null || userModel.getName().isEmpty()
+        || userModel.getEmail() == null || userModel.getEmail().isEmpty() || userModel.getPassword() == null || userModel.getPassword().isEmpty()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            userService.createUser(userModel);
+            return ResponseEntity.ok(new Token(jwtService.generateToken(userModel)));
+        }
+
     }
 }

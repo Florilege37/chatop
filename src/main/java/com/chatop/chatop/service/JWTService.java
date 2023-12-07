@@ -1,15 +1,15 @@
 package com.chatop.chatop.service;
 
+import com.chatop.chatop.model.UserModel;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwsHeader;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.stereotype.Service;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-
-import com.chatop.chatop.model.UserModel;
-import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.*;
-import org.springframework.stereotype.Service;
 @Service
 public class JWTService {
 

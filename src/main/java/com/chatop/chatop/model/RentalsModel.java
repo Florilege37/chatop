@@ -9,16 +9,20 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserModel {
-
-    private String email;
-
+public class RentalsModel {
     private String name;
 
-    private String password;
+    private int surface;
+
+    private int price;
+
+    private String picture;
+
+    private String description;
+
+    private Long owner_id;
 
     private Timestamp created_at;
 
     private Timestamp updated_at;
-
 }

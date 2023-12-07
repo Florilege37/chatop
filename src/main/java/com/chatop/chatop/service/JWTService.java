@@ -25,7 +25,7 @@ public class JWTService {
                 .issuer("self")
                 .issuedAt(now) // Moment de création
                 .expiresAt(now.plus(1, ChronoUnit.DAYS)) // Durée dans le temps
-                .subject(userModel.getName()) // Le subject
+                .subject(userModel.getEmail()) // Le subject
                 .build();
         JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims);
         return this.jwtEncoder.encode(jwtEncoderParameters).getTokenValue();

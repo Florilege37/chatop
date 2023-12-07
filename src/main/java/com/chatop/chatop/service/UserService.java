@@ -7,11 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLOutput;
+
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     public Iterable<UserDB> getUsers() {
         return userRepository.findAll();
@@ -42,6 +47,15 @@ public class UserService {
             }
         }
         return null;
+    }
+
+    public UserDB findByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
+    // Permet de tester si le mot de passe existe dans la base
+    public boolean isUserValid(String password, UserDB user) {
+        return passwordEncoder.matches(password, user.getPassword());
     }
 
 }

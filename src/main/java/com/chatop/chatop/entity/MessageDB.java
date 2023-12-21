@@ -4,11 +4,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Data
 @Table(name = "MESSAGES")
 public class MessageDB {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,9 +28,9 @@ public class MessageDB {
     private String message;
 
     @Column(name="created_at")
-    private Timestamp created_at;
+    private LocalDate created_at = LocalDate.now();;
 
     @Column(name="updated_at")
-    private Timestamp updated_at;
+    private LocalDate updated_at = LocalDate.now();;
 
 }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Data
@@ -33,8 +35,8 @@ public class RentalsDB {
     private Long owner_id;
 
     @Column(name="created_at")
-    private Timestamp created_at;
+    private LocalDate created_at = LocalDate.now();
 
     @Column(name="updated_at")
-    private Timestamp updated_at;
+    private LocalDate updated_at = LocalDate.now();
 }

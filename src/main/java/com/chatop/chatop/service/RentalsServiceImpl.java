@@ -6,10 +6,14 @@ import com.chatop.chatop.model.response.RentalResponse;
 import com.chatop.chatop.repository.RentalsRepository;
 import com.chatop.chatop.service.interfaces.RentalsService;
 import com.chatop.chatop.service.interfaces.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
@@ -33,7 +37,7 @@ public class RentalsServiceImpl implements RentalsService {
     }
 
     @Override
-    public void createRental(RentalsModel rentalsModel, Principal user) throws IOException {
+    public void createRental(HttpServletRequest request, RentalsModel rentalsModel, Principal user) throws IOException {
         RentalsDB rentalsDB = new RentalsDB();
         rentalsDB.setName(rentalsModel.getName());
         rentalsDB.setSurface(rentalsModel.getSurface());
@@ -43,13 +47,31 @@ public class RentalsServiceImpl implements RentalsService {
         StringBuilder sb = new StringBuilder();
         sb.append("data:image/png;base64,");
         sb.append(StringUtils.newStringUtf8(Base64.getEncoder().encode(rentalsModel.getPicture().getBytes())));
-        rentalsDB.setPicture(sb.toString());
+
 
         rentalsDB.setDescription(rentalsModel.getDescription());
         //On récupère l'ID du user connecté
         String mail = jwtService.getUsernamePasswordLoginInfo(user).toString();
         long owner_id = userService.findByEmail(mail).getId();
         rentalsDB.setOwner_id(owner_id);
+
+        //On récupère l'image
+        MultipartFile file = rentalsModel.getPicture();
+        String fileName = file.getOriginalFilename();
+        String filePath = request.getSession().getServletContext().getRealPath("/images/");
+        //Crée un fichier dans le serveur
+        File dest = new File(filePath + fileName);
+        if(!dest.exists()) {
+            new File(filePath).mkdir();
+        }
+        //On transfère l'image dans le serveur
+        file.transferTo(dest);
+
+        String contextPath = request.getContextPath();
+        String relativePath = "/images/" + fileName;
+        //On génère l'URL
+        String imageUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + contextPath + relativePath;
+        rentalsDB.setPicture(imageUrl);
 
         rentalsRepository.save(rentalsDB);
     }
@@ -81,7 +103,7 @@ public class RentalsServiceImpl implements RentalsService {
     }
 
     @Override
-    public void updateRental(Long id, RentalsModel rentalsModel, Principal user) throws IOException {
+    public void updateRental(Long id, RentalsModel rentalsModel) throws IOException {
         Optional<RentalsDB> rentalsDB = rentalsRepository.findById(id);
         if (rentalsDB.isPresent()){
             RentalsDB rentals = rentalsDB.get();
@@ -91,16 +113,6 @@ public class RentalsServiceImpl implements RentalsService {
             rentals.setPrice(rentalsModel.getPrice());
             rentals.setDescription(rentalsModel.getDescription());
             rentals.setUpdated_at(LocalDate.now());
-
-            //On crée un URI pour la photo
-            StringBuilder sb = new StringBuilder();
-            sb.append("data:image/png;base64,");
-            sb.append(StringUtils.newStringUtf8(Base64.getEncoder().encode(rentalsModel.getPicture().getBytes())));
-            rentals.setPicture(sb.toString());
-
-            String mail = jwtService.getUsernamePasswordLoginInfo(user).toString();
-            long owner_id = userService.findByEmail(mail).getId();
-            rentals.setOwner_id(owner_id);
 
             rentalsRepository.save(rentals);
         }

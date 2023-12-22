@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,8 +68,8 @@ public class RentalsController {
             @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "401", content = {})})
     @PostMapping("rentals")
-    public ResponseEntity<?> postRentals(@ModelAttribute RentalsModel rentalsModel, Principal user) throws IOException {
-        rentalsService.createRental(rentalsModel, user);
+    public ResponseEntity<?> postRentals(HttpServletRequest request, @ModelAttribute RentalsModel rentalsModel, Principal user) throws IOException {
+        rentalsService.createRental(request,rentalsModel, user);
         return ResponseEntity.ok(new MessageResponse("Rental created !"));
     }
 
@@ -80,12 +81,12 @@ public class RentalsController {
             @ApiResponse(responseCode = "401", content = {}),
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(), mediaType = "application/json") })})
     @PutMapping("rentals/{id}")
-    public ResponseEntity<?> putRentals(@PathVariable("id") Long id, @ModelAttribute RentalsModel rentalsModel, Principal user) throws IOException {
+    public ResponseEntity<?> putRentals(HttpServletRequest request, @PathVariable("id") Long id, @ModelAttribute RentalsModel rentalsModel, Principal user) throws IOException {
         RentalsDB rental = rentalsService.findById(id);
         if (rental == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        rentalsService.updateRental(id, rentalsModel, user);
+        rentalsService.updateRental(id, rentalsModel);
         return ResponseEntity.ok(new MessageResponse("Rental updated !"));
     }
 }

@@ -6,6 +6,7 @@ import com.chatop.chatop.model.response.RentalResponse;
 import com.chatop.chatop.repository.RentalsRepository;
 import com.chatop.chatop.service.interfaces.RentalsService;
 import com.chatop.chatop.service.interfaces.UserService;
+import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,9 +38,15 @@ public class RentalsServiceImpl implements RentalsService {
         rentalsDB.setName(rentalsModel.getName());
         rentalsDB.setSurface(rentalsModel.getSurface());
         rentalsDB.setPrice(rentalsModel.getPrice());
-        rentalsDB.setPicture(Base64.getEncoder().encodeToString(rentalsModel.getPicture().getBytes()));
-        rentalsDB.setDescription(rentalsModel.getDescription());
 
+        //On crée un URI pour la photo
+        StringBuilder sb = new StringBuilder();
+        sb.append("data:image/png;base64,");
+        sb.append(StringUtils.newStringUtf8(Base64.getEncoder().encode(rentalsModel.getPicture().getBytes())));
+        rentalsDB.setPicture(sb.toString());
+
+        rentalsDB.setDescription(rentalsModel.getDescription());
+        //On récupère l'ID du user connecté
         String mail = jwtService.getUsernamePasswordLoginInfo(user).toString();
         long owner_id = userService.findByEmail(mail).getId();
         rentalsDB.setOwner_id(owner_id);
@@ -67,6 +74,7 @@ public class RentalsServiceImpl implements RentalsService {
         rentalResponse.setPrice(rentalsDB.getPrice());
         rentalResponse.setPicture(rentalsDB.getPicture());
         rentalResponse.setDescription(rentalsDB.getDescription());
+        rentalResponse.setOwner_id(rentalsDB.getOwner_id());
         rentalResponse.setCreated_at(rentalsDB.getCreated_at());
         rentalResponse.setUpdated_at(rentalsDB.getUpdated_at());
         return rentalResponse;
@@ -81,9 +89,14 @@ public class RentalsServiceImpl implements RentalsService {
             rentals.setName(rentalsModel.getName());
             rentals.setSurface(rentalsModel.getSurface());
             rentals.setPrice(rentalsModel.getPrice());
-            rentals.setPicture(Base64.getEncoder().encodeToString(rentalsModel.getPicture().getBytes()));
             rentals.setDescription(rentalsModel.getDescription());
             rentals.setUpdated_at(LocalDate.now());
+
+            //On crée un URI pour la photo
+            StringBuilder sb = new StringBuilder();
+            sb.append("data:image/png;base64,");
+            sb.append(StringUtils.newStringUtf8(Base64.getEncoder().encode(rentalsModel.getPicture().getBytes())));
+            rentals.setPicture(sb.toString());
 
             String mail = jwtService.getUsernamePasswordLoginInfo(user).toString();
             long owner_id = userService.findByEmail(mail).getId();

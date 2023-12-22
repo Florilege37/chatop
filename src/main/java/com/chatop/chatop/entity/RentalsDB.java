@@ -3,6 +3,7 @@ package com.chatop.chatop.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.io.File;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;

@@ -5,10 +5,14 @@ import com.chatop.chatop.model.RentalsModel;
 import com.chatop.chatop.model.response.RentalResponse;
 import com.chatop.chatop.repository.RentalsRepository;
 import com.chatop.chatop.service.interfaces.RentalsService;
+import com.chatop.chatop.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.security.Principal;
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.Optional;
 
 @Service
@@ -16,20 +20,30 @@ public class RentalsServiceImpl implements RentalsService {
 
     @Autowired
     private RentalsRepository rentalsRepository;
+
+    @Autowired
+    private JWTService jwtService;
+
+    @Autowired
+    private UserService userService;
     @Override
     public Iterable<RentalsDB> getRentals() {
         return rentalsRepository.findAll();
     }
 
     @Override
-    public void createRental(RentalsModel rentalsModel){
+    public void createRental(RentalsModel rentalsModel, Principal user) throws IOException {
         RentalsDB rentalsDB = new RentalsDB();
         rentalsDB.setName(rentalsModel.getName());
         rentalsDB.setSurface(rentalsModel.getSurface());
         rentalsDB.setPrice(rentalsModel.getPrice());
-        rentalsDB.setPicture(rentalsModel.getPicture());
+        rentalsDB.setPicture(Base64.getEncoder().encodeToString(rentalsModel.getPicture().getBytes()));
         rentalsDB.setDescription(rentalsModel.getDescription());
-        rentalsDB.setOwner_id(rentalsModel.getOwner_id());
+
+        String mail = jwtService.getUsernamePasswordLoginInfo(user).toString();
+        long owner_id = userService.findByEmail(mail).getId();
+        rentalsDB.setOwner_id(owner_id);
+
         rentalsRepository.save(rentalsDB);
     }
 
@@ -59,7 +73,7 @@ public class RentalsServiceImpl implements RentalsService {
     }
 
     @Override
-    public void updateRental(Long id, RentalsModel rentalsModel){
+    public void updateRental(Long id, RentalsModel rentalsModel, Principal user) throws IOException {
         Optional<RentalsDB> rentalsDB = rentalsRepository.findById(id);
         if (rentalsDB.isPresent()){
             RentalsDB rentals = rentalsDB.get();
@@ -67,10 +81,13 @@ public class RentalsServiceImpl implements RentalsService {
             rentals.setName(rentalsModel.getName());
             rentals.setSurface(rentalsModel.getSurface());
             rentals.setPrice(rentalsModel.getPrice());
-            //rentals.setPicture(rentalsModel.getPicture());
+            rentals.setPicture(Base64.getEncoder().encodeToString(rentalsModel.getPicture().getBytes()));
             rentals.setDescription(rentalsModel.getDescription());
-            rentals.setOwner_id(rentalsModel.getOwner_id());
             rentals.setUpdated_at(LocalDate.now());
+
+            String mail = jwtService.getUsernamePasswordLoginInfo(user).toString();
+            long owner_id = userService.findByEmail(mail).getId();
+            rentals.setOwner_id(owner_id);
 
             rentalsRepository.save(rentals);
         }

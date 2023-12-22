@@ -3,6 +3,7 @@ package com.chatop.chatop.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -19,7 +20,7 @@ public class RentalsModel {
 
     private float price;
 
-    private String picture;
+    private MultipartFile picture;
 
     private String description;
 

@@ -43,5 +43,4 @@ public class JWTService {
         }
         return usernameInfo;
     }
-
 }

@@ -17,6 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.security.Principal;
+
 @Tag(name = "Rentals", description = "Rentals Controller")
 @Api("API pour les opérations CRUD sur les locations.")
 @RestController
@@ -64,8 +67,8 @@ public class RentalsController {
             @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "401", content = {})})
     @PostMapping("rentals")
-    public ResponseEntity<?> postRentals(@ModelAttribute RentalsModel rentalsModel){
-        rentalsService.createRental(rentalsModel);
+    public ResponseEntity<?> postRentals(@ModelAttribute RentalsModel rentalsModel, Principal user) throws IOException {
+        rentalsService.createRental(rentalsModel, user);
         return ResponseEntity.ok(new MessageResponse("Rental created !"));
     }
 
@@ -77,12 +80,12 @@ public class RentalsController {
             @ApiResponse(responseCode = "401", content = {}),
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(), mediaType = "application/json") })})
     @PutMapping("rentals/{id}")
-    public ResponseEntity<?> putRentals(@PathVariable("id") Long id, @RequestBody RentalsModel rentalsModel){
+    public ResponseEntity<?> putRentals(@PathVariable("id") Long id, @ModelAttribute RentalsModel rentalsModel, Principal user) throws IOException {
         RentalsDB rental = rentalsService.findById(id);
         if (rental == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        rentalsService.updateRental(id, rentalsModel);
+        rentalsService.updateRental(id, rentalsModel, user);
         return ResponseEntity.ok(new MessageResponse("Rental updated !"));
     }
 }

@@ -5,9 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -24,9 +22,9 @@ public class RentalsModel {
 
     private String description;
 
-    private Long owner_id;
+    private Long ownerId;
 
-    private LocalDate created_at;
+    private LocalDate createdAt;
 
-    private LocalDate  updated_at;
+    private LocalDate updatedAt;
 }

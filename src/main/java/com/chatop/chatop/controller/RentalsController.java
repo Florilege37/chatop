@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Optional;
 
 @Tag(name = "Rentals", description = "Rentals Controller")
 @Api("API pour les opérations CRUD sur les locations.")
@@ -39,8 +40,8 @@ public class RentalsController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(), mediaType = "application/json") })})
     @GetMapping("rentals/{id}")
     public ResponseEntity<?> getRentalsById(@PathVariable("id") Long id){
-        RentalsDB rental = rentalsService.findById(id);
-        if (rental == null){
+        Optional<RentalsDB> rental = rentalsService.findById(id);
+        if (rental.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(rentalsService.createRentalResponse(rental));
@@ -56,7 +57,7 @@ public class RentalsController {
         RentalListResponse rentalListResponse = new RentalListResponse();
         Iterable<RentalsDB> rental = rentalsService.getRentals();
         for (RentalsDB rentalDB : rental){
-            rentalListResponse.getRentals().add(rentalsService.createRentalResponse(rentalDB));
+            rentalListResponse.getRentals().add(rentalsService.createAllRentalResponse(rentalDB));
         }
         return ResponseEntity.ok(rentalListResponse);
     }
@@ -82,8 +83,8 @@ public class RentalsController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(), mediaType = "application/json") })})
     @PutMapping("rentals/{id}")
     public ResponseEntity<?> putRentals(HttpServletRequest request, @PathVariable("id") Long id, @ModelAttribute RentalsModel rentalsModel, Principal user) throws IOException {
-        RentalsDB rental = rentalsService.findById(id);
-        if (rental == null){
+        Optional<RentalsDB> rental = rentalsService.findById(id);
+        if (rental.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         rentalsService.updateRental(id, rentalsModel);

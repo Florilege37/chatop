@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLIntegrityConstraintViolationException;
-
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -66,8 +64,8 @@ public class UserServiceImpl implements UserService {
         meResponse.setId(userDB.getId());
         meResponse.setName(userDB.getName());
         meResponse.setEmail(userDB.getEmail());
-        meResponse.setCreated_at(userDB.getCreated_at());
-        meResponse.setUpdated_at(userDB.getUpdated_at());
+        meResponse.setCreated_at(userDB.getCreatedAt());
+        meResponse.setUpdated_at(userDB.getUpdatedAt());
         return meResponse;
     }
 

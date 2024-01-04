@@ -13,7 +13,7 @@ import io.swagger.v3.oas.models.servers.Server;
 @Configuration
 public class OpenAPIConfig {
 
-    @Value("${bezkoder.openapi.dev-url}")
+    @Value("${chatop.openapi.dev-url}")
     private String devUrl;
 
     @Bean

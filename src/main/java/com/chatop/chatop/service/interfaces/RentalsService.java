@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Optional;
 
 public interface RentalsService {
 
@@ -16,9 +17,11 @@ public interface RentalsService {
 
     void createRental(HttpServletRequest request, RentalsModel rentalsModel, Principal user) throws IOException;
 
-    RentalsDB findById(Long id);
+    Optional<RentalsDB> findById(Long id);
 
-    RentalResponse createRentalResponse(RentalsDB rentalsDB);
+    RentalResponse createRentalResponse(Optional<RentalsDB> rentalsDB);
+
+    RentalResponse createAllRentalResponse(RentalsDB rentalsDB);
 
     void updateRental(Long id, RentalsModel rentalsModel) throws IOException;
 }

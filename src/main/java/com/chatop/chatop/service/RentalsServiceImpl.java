@@ -9,7 +9,6 @@ import com.chatop.chatop.service.interfaces.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,9 +50,10 @@ public class RentalsServiceImpl implements RentalsService {
 
         rentalsDB.setDescription(rentalsModel.getDescription());
         //On récupère l'ID du user connecté
-        String mail = jwtService.getUsernamePasswordLoginInfo(user).toString();
+        String mail = user.getName();
+        System.out.println(mail);
         long owner_id = userService.findByEmail(mail).getId();
-        rentalsDB.setOwner_id(owner_id);
+        rentalsDB.setOwnerId(owner_id);
 
         //On récupère l'image
         MultipartFile file = rentalsModel.getPicture();
@@ -77,28 +77,41 @@ public class RentalsServiceImpl implements RentalsService {
     }
 
     @Override
-    public RentalsDB findById(Long id){
-        Iterable<RentalsDB> rentals = getRentals();
-        for (RentalsDB rental : rentals){
-            if (rental.getId().equals(id)){
-                return rental;
-            }
-        }
-        return null;
+    public Optional<RentalsDB> findById(Long id){
+        return rentalsRepository.findById(id);
     }
 
     @Override
-    public RentalResponse createRentalResponse(RentalsDB rentalsDB){
+    public RentalResponse createRentalResponse(Optional<RentalsDB> rentalsDB){
         RentalResponse rentalResponse = new RentalResponse();
-        rentalResponse.setId(rentalsDB.getId());
-        rentalResponse.setName(rentalsDB.getName());
-        rentalResponse.setSurface(rentalsDB.getSurface());
-        rentalResponse.setPrice(rentalsDB.getPrice());
-        rentalResponse.setPicture(rentalsDB.getPicture());
-        rentalResponse.setDescription(rentalsDB.getDescription());
-        rentalResponse.setOwner_id(rentalsDB.getOwner_id());
-        rentalResponse.setCreated_at(rentalsDB.getCreated_at());
-        rentalResponse.setUpdated_at(rentalsDB.getUpdated_at());
+        if (rentalsDB.isPresent()){
+            rentalResponse.setId(rentalsDB.get().getId());
+            rentalResponse.setName(rentalsDB.get().getName());
+            rentalResponse.setSurface(rentalsDB.get().getSurface());
+            rentalResponse.setPrice(rentalsDB.get().getPrice());
+            rentalResponse.setPicture(rentalsDB.get().getPicture());
+            rentalResponse.setDescription(rentalsDB.get().getDescription());
+            rentalResponse.setOwner_id(rentalsDB.get().getOwnerId());
+            rentalResponse.setCreated_at(rentalsDB.get().getCreatedAt());
+            rentalResponse.setUpdated_at(rentalsDB.get().getUpdatedAt());
+        }
+
+        return rentalResponse;
+    }
+
+    @Override
+    public RentalResponse createAllRentalResponse(RentalsDB rentalsDB){
+        RentalResponse rentalResponse = new RentalResponse();
+            rentalResponse.setId(rentalsDB.getId());
+            rentalResponse.setName(rentalsDB.getName());
+            rentalResponse.setSurface(rentalsDB.getSurface());
+            rentalResponse.setPrice(rentalsDB.getPrice());
+            rentalResponse.setPicture(rentalsDB.getPicture());
+            rentalResponse.setDescription(rentalsDB.getDescription());
+            rentalResponse.setOwner_id(rentalsDB.getOwnerId());
+            rentalResponse.setCreated_at(rentalsDB.getCreatedAt());
+            rentalResponse.setUpdated_at(rentalsDB.getUpdatedAt());
+
         return rentalResponse;
     }
 
@@ -112,7 +125,7 @@ public class RentalsServiceImpl implements RentalsService {
             rentals.setSurface(rentalsModel.getSurface());
             rentals.setPrice(rentalsModel.getPrice());
             rentals.setDescription(rentalsModel.getDescription());
-            rentals.setUpdated_at(LocalDate.now());
+            rentals.setUpdatedAt(LocalDate.now());
 
             rentalsRepository.save(rentals);
         }

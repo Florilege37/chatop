@@ -3,9 +3,7 @@ package com.chatop.chatop.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Data
@@ -19,18 +17,18 @@ public class MessageDB {
     private Long id;
 
     @Column(name="rental_id")
-    private Long rental_id;
+    private Long rentalId;
 
     @Column(name="user_id")
-    private Long user_id;
+    private Long userId;
 
     @Column(name="message")
     private String message;
 
     @Column(name="created_at")
-    private LocalDate created_at = LocalDate.now();;
+    private LocalDate createdAt = LocalDate.now();;
 
     @Column(name="updated_at")
-    private LocalDate updated_at = LocalDate.now();;
+    private LocalDate updatedAt = LocalDate.now();;
 
 }

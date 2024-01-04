@@ -86,7 +86,8 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<?>  me(@AuthenticationPrincipal OidcUser oidcUserString, Principal user){
         //On récupère le mail du user connecté grâce à son Token
-        String userMail = jwtService.getUsernamePasswordLoginInfo(user).toString();
+        String userMail = user.getName();
+        System.out.println(userMail);
         //On récupère le user dans la base grâce au mail
         UserDB userDB = userService.findByEmail(userMail);
         //On renvoie ses données

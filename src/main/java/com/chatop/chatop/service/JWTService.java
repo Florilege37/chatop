@@ -28,19 +28,4 @@ public class JWTService {
         JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims);
         return this.jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
     }
-
-    //Renvoie le subject dans le token
-    public StringBuffer getUsernamePasswordLoginInfo(Principal user)
-    {
-        StringBuffer usernameInfo = new StringBuffer();
-
-        JwtAuthenticationToken token = (JwtAuthenticationToken) user;
-        if(token.isAuthenticated()){
-            usernameInfo.append(token.getName());
-        }
-        else{
-            usernameInfo.append("NA");
-        }
-        return usernameInfo;
-    }
 }

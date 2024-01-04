@@ -26,8 +26,8 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void createMessage(MessageModel messageModel){
         MessageDB messageDB = new MessageDB();
-        messageDB.setUser_id(messageModel.getUser_id());
-        messageDB.setRental_id(messageModel.getRental_id());
+        messageDB.setUserId(messageModel.getUser_id());
+        messageDB.setRentalId(messageModel.getRental_id());
         messageDB.setMessage(messageModel.getMessage());
         messageRepository.save(messageDB);
     }

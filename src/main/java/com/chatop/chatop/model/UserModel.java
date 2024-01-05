@@ -14,6 +14,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class UserModel {
 
+    private Long id;
+
     @Size (min = 5)
     @Email
     @NotNull
@@ -27,8 +29,8 @@ public class UserModel {
     @NotNull
     private String password;
 
-    private LocalDate createdAt;
+    private LocalDate created_at;
 
-    private LocalDate updatedAt;
+    private LocalDate updated_at;
 
 }

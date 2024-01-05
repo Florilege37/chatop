@@ -1,6 +1,6 @@
 package com.chatop.chatop.controller;
 
-import com.chatop.chatop.entity.UserDB;
+import com.chatop.chatop.model.UserModel;
 import com.chatop.chatop.model.response.MeResponse;
 import com.chatop.chatop.service.UserServiceImpl;
 import io.swagger.annotations.Api;
@@ -36,7 +36,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(), mediaType = "application/json") })})
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable("id") Long id){
-        UserDB user = userService.findById(id);
+        UserModel user = userService.findById(id);
         if (user == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

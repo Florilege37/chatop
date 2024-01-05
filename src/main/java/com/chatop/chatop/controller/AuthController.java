@@ -1,6 +1,5 @@
 package com.chatop.chatop.controller;
 
-import com.chatop.chatop.entity.UserDB;
 import com.chatop.chatop.model.UserModel;
 import com.chatop.chatop.model.response.EmptyResponse;
 import com.chatop.chatop.model.response.MeResponse;
@@ -47,7 +46,7 @@ public class AuthController {
             @ApiResponse(responseCode = "401", content = {})})
     @PostMapping("/login")
     public ResponseEntity<?> getToken(@RequestBody UserModel userModel) {
-        UserDB user = userService.findByEmail(userModel.getEmail());
+        UserModel user = userService.findByEmail(userModel.getEmail());
         if (user==null){
             return new ResponseEntity<>(new MessageResponse("error"), HttpStatus.UNAUTHORIZED);
         }
@@ -87,10 +86,9 @@ public class AuthController {
     public ResponseEntity<?>  me(@AuthenticationPrincipal OidcUser oidcUserString, Principal user){
         //On récupère le mail du user connecté grâce à son Token
         String userMail = user.getName();
-        System.out.println(userMail);
         //On récupère le user dans la base grâce au mail
-        UserDB userDB = userService.findByEmail(userMail);
+        UserModel userModel = userService.findByEmail(userMail);
         //On renvoie ses données
-        return ResponseEntity.ok(userService.createMeResponse(userDB));
+        return ResponseEntity.ok(userService.createMeResponse(userModel));
     }
 }

@@ -7,19 +7,16 @@ import com.chatop.chatop.model.response.MeResponse;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 public interface UserService {
-    public Iterable<UserDB> getUsers();
-
-    public void delUsers();
 
     //Ajoute un UserDB dans la base
     void createUser(UserModel userModel) throws SQLIntegrityConstraintViolationException;
 
-    UserDB findById(Long id);
+    UserModel findById(Long id);
 
-    UserDB findByEmail(String email);
+    UserModel findByEmail(String email);
 
     // Permet de tester si le mot de passe existe dans la base
-    boolean isUserValid(String password, UserDB user);
+    boolean isUserValid(String password, UserModel user);
 
-    MeResponse createMeResponse(UserDB userDB);
+    MeResponse createMeResponse(UserModel userModel);
 }

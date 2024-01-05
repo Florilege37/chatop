@@ -25,8 +25,8 @@ public class UserDB {
     private String password;
 
     @Column(name="created_at")
-    private LocalDate createdAt = LocalDate.now();;
+    private LocalDate created_at;
 
     @Column(name="updated_at")
-    private LocalDate updatedAt = LocalDate.now();;
+    private LocalDate updated_at;
 }

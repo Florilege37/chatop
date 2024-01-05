@@ -1,7 +1,7 @@
 package com.chatop.chatop.controller;
 
-import com.chatop.chatop.entity.RentalsDB;
 import com.chatop.chatop.model.RentalsModel;
+import com.chatop.chatop.model.RentalsModelLienFile;
 import com.chatop.chatop.model.response.MessageResponse;
 import com.chatop.chatop.model.response.RentalListResponse;
 import com.chatop.chatop.service.RentalsServiceImpl;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Optional;
 
 @Tag(name = "Rentals", description = "Rentals Controller")
 @Api("API pour les opérations CRUD sur les locations.")
@@ -40,11 +39,11 @@ public class RentalsController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(), mediaType = "application/json") })})
     @GetMapping("rentals/{id}")
     public ResponseEntity<?> getRentalsById(@PathVariable("id") Long id){
-        Optional<RentalsDB> rental = rentalsService.findById(id);
-        if (rental.isEmpty()){
+        RentalsModelLienFile rentalModelLienFile = rentalsService.findById(id);
+        if (rentalModelLienFile == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(rentalsService.createRentalResponse(rental));
+        return ResponseEntity.ok(rentalsService.createRentalResponse(rentalModelLienFile));
     }
     @Operation(
             summary = "Get All Rentals",
@@ -55,9 +54,9 @@ public class RentalsController {
     @GetMapping("rentals")
     public ResponseEntity<?> getRentals(){
         RentalListResponse rentalListResponse = new RentalListResponse();
-        Iterable<RentalsDB> rental = rentalsService.getRentals();
-        for (RentalsDB rentalDB : rental){
-            rentalListResponse.getRentals().add(rentalsService.createAllRentalResponse(rentalDB));
+        Iterable<RentalsModelLienFile> rentalModelLienFileList = rentalsService.getRentals();
+        for (RentalsModelLienFile rentalModelModelLienFile : rentalModelLienFileList){
+            rentalListResponse.getRentals().add(rentalsService.createAllRentalResponse(rentalModelModelLienFile));
         }
         return ResponseEntity.ok(rentalListResponse);
     }
@@ -82,12 +81,12 @@ public class RentalsController {
             @ApiResponse(responseCode = "401", content = {}),
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(), mediaType = "application/json") })})
     @PutMapping("rentals/{id}")
-    public ResponseEntity<?> putRentals(HttpServletRequest request, @PathVariable("id") Long id, @ModelAttribute RentalsModel rentalsModel, Principal user) throws IOException {
-        Optional<RentalsDB> rental = rentalsService.findById(id);
-        if (rental.isEmpty()){
+    public ResponseEntity<?> putRentals(HttpServletRequest request, @PathVariable("id") Long id, @ModelAttribute RentalsModelLienFile rentalsModelModelLienFile, Principal user) throws IOException {
+        RentalsModelLienFile rental = rentalsService.findById(id);
+        if (rental == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        rentalsService.updateRental(id, rentalsModel);
+        rentalsService.updateRental(id, rentalsModelModelLienFile);
         return ResponseEntity.ok(new MessageResponse("Rental updated !"));
     }
 }

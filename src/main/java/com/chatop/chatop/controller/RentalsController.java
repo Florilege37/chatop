@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class RentalsController {
     private RentalsServiceImpl rentalsService;
 
     @Operation(
+            security = {@SecurityRequirement(name= "bearerAuth")},
             summary = "Get Rentals/id",
             description = "Permet de récupérer une offre de location en fonction de son ID")
     @ApiResponses({
@@ -46,6 +48,7 @@ public class RentalsController {
         return ResponseEntity.ok(rentalsService.createRentalResponse(rentalModelLienFile));
     }
     @Operation(
+            security = {@SecurityRequirement(name= "bearerAuth")},
             summary = "Get All Rentals",
             description = "Permet de récupérer toutes les offres de location")
     @ApiResponses({
@@ -62,6 +65,7 @@ public class RentalsController {
     }
 
     @Operation(
+            security = {@SecurityRequirement(name= "bearerAuth")},
             summary = "Post Rentals",
             description = "Permet de publier une offre de location")
     @ApiResponses({
@@ -74,6 +78,7 @@ public class RentalsController {
     }
 
     @Operation(
+            security = {@SecurityRequirement(name= "bearerAuth")},
             summary = "Put Rentals",
             description = "Permet de modifier une offre de location en fonction de son ID")
     @ApiResponses({

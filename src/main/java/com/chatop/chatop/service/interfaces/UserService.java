@@ -13,6 +13,7 @@ public interface UserService {
 
     UserModel findById(Long id);
 
+    // Trouve un user grace à son email, puis le retourne.
     UserModel findByEmail(String email);
 
     // Permet de tester si le mot de passe existe dans la base

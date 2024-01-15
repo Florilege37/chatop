@@ -24,7 +24,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
     @Override
-    //Ajoute un UserDB dans la base
     public void createUser(UserModel userModel){
             UserDB userDB = modelMapper.map(userModel, UserDB.class);
 
@@ -42,7 +41,6 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(userRepository.findById(id), UserModel.class);
     }
     @Override
-    // Trouve un user grace à son email, puis le retourne.
     public UserModel findByEmail(String email){
         //Si on ne trouve pas de user, on renvoie null
         if (userRepository.findByEmail(email) == null){
@@ -51,7 +49,6 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(userRepository.findByEmail(email), UserModel.class);
     }
     @Override
-    // Permet de tester si le mot de passe existe dans la base
     public boolean isUserValid(String password, UserModel user) {
         return passwordEncoder.matches(password, user.getPassword());
     }
